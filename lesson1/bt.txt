@@ -1,0 +1,10 @@
+viết 1 hàm xử lý mảng số:
+ + Sắp xếp mảng: nhận đầu vào 2 tham số, 
+    tham số thứ nhất 1 mảng, tham số thứ 2 
+    có 2 giá trị 'ASC' | 'DESC'. 
+                + Nếu là ASC -> sắp xếp tăng
+                + Ngược lại giảm
+ + Thực hiện bình phương các phần tử bên trong mảng, 
+ nhưng không làm thay đổi mảng hiện tại
+
+ -> dùng được module js
