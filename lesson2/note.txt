@@ -1,0 +1,8 @@
+- Khái niệm về ExpressJs
+- Mô hình client - server -> HTTP
+
+- sử dụng api (get):
+Yêu cầu về nhà tìm hiểu, thực hành lại:
+- sử dụng method get: xoá, cập nhật
+- kỹ thuật truyền giá trị qua tham số params
+- middleware, middleware Router
