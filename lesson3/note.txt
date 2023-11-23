@@ -1,0 +1,18 @@
+- middleware: một hàm xử lý trung gian (bảo vệ)
+- lý thuyết về api -> RESTful API
+- query
+
+
+- những lý do khiến server bị crash:
+    - về mặt cú pháp
+    - về mặt dữ liệu
+
+-> sử dụng cú pháp try catch để bắt lỗi
+
+try {
+    // viết logic ở đây
+    // đoạn code lỗi ở đây
+    // code x 1000
+} catch(e){
+    // thực thi khi đoạn code lỗi xảy ra 
+}
