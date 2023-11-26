@@ -1,10 +1,10 @@
 import express from 'express';
-import crypto from 'crypto';
 import middlewares from './middlewares/index.js';
+import todosController from './controllers/todos.js';
+import authorsController from './controllers/authors.js';
 const app = express();
 app.use(express.json());
 
-const todos = [];
 /**
  * với mỗi một API thì endpoint thường sẽ là tên resourse
  * https://facebook.com
@@ -19,59 +19,11 @@ const todos = [];
  *  (Quy định sẽ gửi ngầm dữ liệu qua body của request)
  *  http://localhost:3001/classes/1/students tuỳ vào nghiệp vụ, nhưng yêu cầu endpoint phải là tên 1 resourse
  */
-app.post('/todos', middlewares.validationCreateTodo, (req, res) => {
-    // nhận về định dạng json
-    /**
-     * Một todo: id, todoName, author
-     */
-    const { todoName, author } = req.body;
-    const newTodo = {
-        todoName,
-        author,
-        id: crypto.randomUUID()
-    };
-    todos.push(newTodo);
-    res.status(201).send({
-        messasge: 'Thành công!',
-        data: todos
-    });
-    return;
-});
+app.post('/todos', middlewares.validationCreateTodo, todosController.createTodo);
 // viết api: /todos -> thực hiện lấy dữ liệu todos
-app.get('/todos', (req, res) => {
-    const { todoName } = req.query;
-    if (todoName) {
-        const listData = todos.filter((item) => {
-            return String(item.todoName).toLowerCase().includes(todoName.toLowerCase());
-        });
-        res.send({
-            message: 'Thành công!',
-            data: listData
-        });
-    } else {
-        res.send({
-            message: 'Thành công!',
-            data: todos
-        });
-    }
-});
-
+app.get('/todos', todosController.getAll);
 // viết API -> thực hiện tìm kiếm một todos với Id được truyền trên params
-app.get('/todos/:id', (req, res) => {
-    const { id } = req.params;
-    const currentTodo = todos.find((item) => item.id === id);
-    if (!currentTodo) {
-        res.send({
-            message: 'Thất bại! Không tồn tại bản ghi dữ liệu!',
-            data: null
-        });
-    } else {
-        res.send({
-            message: 'Thành công!',
-            data: currentTodo
-        });
-    }
-});
+app.get('/todos/:id', todosController.getOnTodoByIdParam);
 // viết API -> thực hiện tìm kiêm tất cả các todoName thoả mãn với todoName được truyền trên query params
 // todoName chỉ cần chứa ký tự được truyền, không phân biệt ký tự hoa, thường
 
@@ -79,34 +31,7 @@ app.get('/todos/:id', (req, res) => {
 // lưu ý khi mà dùng với PUT
 // cách dùng API -> endpoint là 1 id params
 // phải gửi dữ liệu cần cập nhật dưới body
-app.put('/todos/:id', (req, res) => {
-    try {
-        const { id } = req.params;
-        const payload = req.body;
-        const foundTodo = todos.find((item) => {
-            return item.id === id;
-        });
-        if (!foundTodo) throw new Error('Không tìm thấy todo hợp lệ!');
-        // kiểm tra số lượng key được gửi lên từ body
-        if (Object.keys(payload).length) {
-            // lặp key từ body
-            for (const key in payload) {
-                // để lấy được giá trị của todo đã tìm, 
-                // sau đó cập nhật bằng giá trị value của key được gửi lên
-                foundTodo[key] = payload[key];
-            }
-        }
-        res.status(201).send({
-            message: 'Thành công!',
-            data: foundTodo
-        });
-    } catch (error) {
-        res.status(403).send({
-            message: error.message,
-            data: null
-        });
-    }
-});
+app.put('/todos/:id', todosController.updateTodoByIdParam);
 
 /**
  * Viết api CRUD theo RESTful API, với resource là authors
@@ -120,6 +45,12 @@ app.put('/todos/:id', (req, res) => {
  * YC2: ở API cập nhật hoặc xoá -> chỉ có author trong dữ liệu đó mới được phép xoá
  * Gợi í PUT: /authors/:id/todos/:todoId
  */
+
+app.get('/authors', authorsController.getAll);
+app.get('/authors/:id', middlewares.checkApiKey, authorsController.getAuthorByIdParam);
+app.get('/authors/:id/todos', middlewares.checkApiKey, authorsController.getAllTodosByAuthorIdParam);
+app.put('/authors/:id/todos/:todoId', middlewares.checkApiKey, authorsController.updateTodo);
+
 app.listen(3001, () => {
     console.log('Server được chạy rùi nè!');
 });

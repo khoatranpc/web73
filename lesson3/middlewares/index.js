@@ -16,6 +16,17 @@ const middlewares = {
             return;
         }
         next();
+    },
+    checkApiKey: (req, res, next) => {
+        const { apiKey } = req.query;
+        if (!apiKey) {
+            res.send({
+                message: 'Bạn không được phép thực hiện hành động',
+                data: null
+            });
+            return;
+        }
+        next();
     }
 }
 
