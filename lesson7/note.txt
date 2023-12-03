@@ -1,0 +1,17 @@
+Collection:
+1 user => nhiều todo
+users: [
+    {
+        _id,
+        userName,
+        role
+    }
+]
+todos: [
+    {
+        todoName,
+        estimate,
+        deadline,
+        userId
+    }
+]
