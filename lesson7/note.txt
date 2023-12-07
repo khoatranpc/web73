@@ -15,3 +15,51 @@ todos: [
         userId
     }
 ]
+
+
+
+========
+
+accounts
+
+email
+password
+createdAt,
+updatedAt
+
+điều kiện
+email phải unique
+password > 6 ký tự >= 7
+
+=======
+users
+
+isActivate
+fullName
+dob
+address
+relationship
+statusShareInfo:
+    + public
+    + private
+accountId
+
+
+
+-> khi thực hiện đăng ký tài khoản xong -> tự động tạo 1 document user: {
+    isActivate: false,
+    accountId: _id của account vừa tạo
+}
+21h:33
+
+-------
+viết API đăng nhập
+-> đăng nhập thành công, thì phải trả về token
+-> nếu isActivate ở bên users mà là false 
+-> trả thêm 1 message: bạn cần cập nhật thông tin để kích hoạt tài khoản
+-> trả thêm 1 đường dẫn là API cập nhật thông tin
+
+viết API cập nhật thông tin
+-> sử dụng token để cập nhật thông tin cho chính bản thân
+-> sau khi cập nhật xong -> chuyển isActivate: true
+
