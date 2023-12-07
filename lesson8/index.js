@@ -1,5 +1,7 @@
 import express from 'express';
 import { connectDb, Collections } from './database/index.js';
+import { ObjectId } from 'mongodb';
+
 const app = express();
 app.use(express.json());
 connectDb();
@@ -43,7 +45,32 @@ app.post('/register', async (req, res) => {
         data: createdNewAccount
     })
     return;
-})
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const authenticated = await Collections["ACCOUNTS"].findOne({
+        email,
+        password
+    });
+    if (!authenticated) {
+        res.status(401).send({
+            message: 'Sai tài khoản hoặc mật khẩu'
+        });
+        return;
+    }
+    const user = await Collections["USERS"].findOne({
+        accountId: new ObjectId(authenticated._id)
+    });
+    if (!user.isActivate) {
+        res.status(200).send({
+            message: 'Bạn cần cập nhật thông tin để kích hoạt tài khoản!',
+            url: `/users/${user._id}`
+        });
+        return
+    }
+    return;
+});
 app.listen(3001, () => {
     console.log('Server run rùi nè');
 })
