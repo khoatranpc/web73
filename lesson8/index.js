@@ -1,11 +1,18 @@
 import express from 'express';
-import { connectDb, Collections } from './database/index.js';
+import cors from 'cors';
 import { ObjectId } from 'mongodb';
+import { connectDb, Collections } from './database/index.js';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 connectDb();
 
+app.get('/', (req, res) => {
+    res.send({
+        message: 'Hello mindxer!'
+    })
+})
 app.post('/register', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
